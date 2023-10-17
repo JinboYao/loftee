@@ -1,0 +1,30 @@
+name:   Perl CI
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Perl
+      uses: shogo82148/actions-setup-perl@v2
+      with:
+        perl-version: '5.32'
+
+    - name: Install dependencies
+      run: cpanm --installdeps .
+
+    - name: Run tests
+      run: prove -l
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
