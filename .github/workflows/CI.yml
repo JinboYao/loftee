@@ -1,120 +1,62 @@
-name: Perl
- 
+name: Perl CI
+
 on:
   push:
+    branches:
+      - main
+      - master
+      - develop
   pull_request:
- 
+    branches:
+      - main
+      - master
+      - develop
+
 jobs:
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        runner: [ubuntu-latest, macos-latest, windows-latest]
-        perl: [ '5.32' ]
- 
-    runs-on: ${{matrix.runner}}
-    name: OS ${{matrix.runner}} Perl ${{matrix.perl}}
- 
+  build:
+    runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v2
- 
-    - name: Set up perl
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Perl
       uses: shogo82148/actions-setup-perl@v1
       with:
-          perl-version: ${{ matrix.perl }}
-          distribution: ${{ ( startsWith( matrix.runner, 'windows-' ) && 'strawberry' ) || 'default' }}
- 
-    - name: Show Perl Version
+        perl-version: '5.34'  # Adjust the Perl version as needed
+    
+    - name: Update CPAN and install App::cpanminus
       run: |
-        perl -v
- 
-    - name: cpanm version number
+        cpan -u
+        cpan App::cpanminus
+
+    - name: Install build-essential
       run: |
-        cpanm -v
- 
-    - name: Install developer Dependencies
-      run: |
-        cpanm File::ShareDir::Install Test::CheckManifest Test::CPAN::Meta::JSON Test::CPAN::Meta Test::Pod
- 
-    - name: Install Dependencies
-      run: |
-        cpanm --installdeps .
- 
+        sudo apt-get update
+        sudo apt-get install -y build-essential
+
+    # - name: Install ImageMagick dependencies
+    #   run: |
+    #     sudo apt-get update
+    #     sudo apt-get install -y imagemagick imagemagick-c++ imagemagick-devel imagemagick-c++-devel imagemagick-perl
+
+    - name: Install dependencies using cpanm
+      run: cpanm --installdeps .
+
     - name: Run tests
-      run: |
-        perl Makefile.PL
-        make
-        make test
- 
+      run: prove -l t
+
     - name: Show Errors on Ubuntu
-      if:  ${{ failure() && startsWith( matrix.runner, 'ubuntu-')}}
+      if: ${{ failure() && startsWith(matrix.runner, 'ubuntu-') }}
       run: |
          cat /home/runner/.cpanm/work/*/build.log
  
     - name: Show Errors on OSX
-      if:  ${{ failure() && startsWith( matrix.runner, 'macos-')}}
+      if: ${{ failure() && startsWith(matrix.runner, 'macos-') }}
       run: |
          cat  /Users/runner/.cpanm/work/*/build.log
- 
-# name: Perl CI
 
-# on:
-#   push:
-#     branches:
-#       - main
-#       - master
-#       - develop
-#   pull_request:
-#     branches:
-#       - main
-#       - master
-#       - develop
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#     - name: Checkout repository
-#       uses: actions/checkout@v3
-
-#     - name: Set up Perl
-#       uses: shogo82148/actions-setup-perl@v1
-#       with:
-#         perl-version: '5.34'  # Adjust the Perl version as needed
-    
-#     - name: Update CPAN and install App::cpanminus
-#       run: |
-#             cpan -u
-#             cpan App::cpanminus
-
-#     - name: Install build-essential
-#       run: |
-#         sudo apt-get update
-#         sudo apt-get install -y build-essential
-
-#     # - name: Install ImageMagick dependencies
-#     #   run: |
-#     #     sudo apt-get update
-#     #     sudo apt-get install -y imagemagick imagemagick-c++ imagemagick-devel imagemagick-c++-devel imagemagick-perl
-
-#     - name: Install dependencies
-#       run: cpanm --installdeps .
-
-#     - name: Run tests
-#       run: prove -l t
-
-#     - name: Show Errors on Ubuntu
-#       if:  ${{ failure() && startsWith( matrix.runner, 'ubuntu-')}}
-#       run: |
-#          cat /home/runner/.cpanm/work/*/build.log
- 
-#     - name: Show Errors on OSX
-#       if:  ${{ failure() && startsWith( matrix.runner, 'macos-')}}
-#       run: |
-#          cat  /Users/runner/.cpanm/work/*/build.log
-
-#     - name: Upload coverage reports to Codecov
-#       uses: codecov/codecov-action@v3
-#       env:
-#         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
