@@ -18,27 +18,28 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Set up Perl
-      uses: shogo82148/actions-setup-perl@v1
+      uses: shogo82148/actions-setup-perl@v2
       with:
         perl-version: '5.34'  # Adjust the Perl version as needed
-    
+
     - name: Update CPAN and install App::cpanminus
       run: |
-        cpan -u
-        cpan App::cpanminus
+        perl -MCPAN -e 'install CPAN'
+        perl -MCPAN -e 'install App::cpanminus'
 
     - name: Install build-essential
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential
 
-    - name: Update Perl Toolchain
+    - name: Run custom configuration (if needed)
       run: |
-        cpan App::cpanoutdated
-        cpanm --self-upgrade
+        # Add any custom configuration steps here if needed
+        perl Makefile.PL
+        make
 
     - name: Install dependencies using cpanm
       run: cpanm --installdeps .
@@ -48,13 +49,11 @@ jobs:
 
     - name: Show Errors on Ubuntu
       if: ${{ failure() && startsWith(matrix.runner, 'ubuntu-') }}
-      run: |
-         cat /home/runner/.cpanm/work/*/build.log
+      run: cat /home/runner/.cpanm/work/*/build.log
  
     - name: Show Errors on OSX
       if: ${{ failure() && startsWith(matrix.runner, 'macos-') }}
-      run: |
-         cat  /Users/runner/.cpanm/work/*/build.log
+      run: cat /Users/runner/.cpanm/work/*/build.log
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
