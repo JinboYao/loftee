@@ -1,3 +1,5 @@
+[![Perl CI](https://github.com/JinboYao/loftee/actions/workflows/CI.yml/badge.svg)](https://github.com/JinboYao/loftee/actions/workflows/CI.yml)
+
 # LOFTEE (Loss-Of-Function Transcript Effect Estimator)
 
 ## Loss-of-function pipeline (inspired by MacArthur et al., 2012, published in Karczewski et al., 2020).
