@@ -26,9 +26,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - name: perl -V
-        uses:
-            perl -V
+        run: perl -V
 
       - name: install cpm and multiple modules
         uses: perl-actions/install-with-cpm@stable
