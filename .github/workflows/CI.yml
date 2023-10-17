@@ -31,7 +31,9 @@ jobs:
         sudo apt-get install -y build-essential
 
     - name: Install dependencies
-      run: cpanm --installdeps .
+      run:
+        yum install ImageMagick ImageMagick-c++ ImageMagick-devel ImageMagick-c++-devel ImageMagick-perl 
+        cpanm --installdeps .
 
     - name: Run tests
       run: prove -l
