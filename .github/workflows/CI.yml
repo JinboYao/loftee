@@ -23,12 +23,15 @@ jobs:
     - name: Set up Perl
       uses: shogo82148/actions-setup-perl@v1.24.1
       with:
-        perl-version: '5.32'
+        perl-version: '5.34'  # Adjust the Perl version as needed
+
+    - name: Install build-essential
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential
 
     - name: Install dependencies
-      run: |
-        sudo apt-get install -y build-essential  # Ensure build tools are available
-        cpanm --installdeps .
+      run: cpanm --installdeps .
 
     - name: Run tests
       run: prove -l
