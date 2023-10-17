@@ -26,7 +26,7 @@ jobs:
         perl-version: '5.34'  # Adjust the Perl version as needed
     
     - name: Update CPAN and install App::cpanminus
-          run: |
+      run: |
             cpan -u
             cpan App::cpanminus
 
