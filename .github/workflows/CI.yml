@@ -37,7 +37,10 @@ jobs:
 
     - name: Run custom configuration (if needed)
       run: |
-        # Add any custom configuration steps here if needed
+        wget https://cpan.metacpan.org/authors/id/A/AU/AUTHOR/Module-Name-1.23.tar.gz
+        tar -zxvf Module-Name-1.23.tar.gz
+        cd Module-Name-1.23
+        chmod +x Makefile.PL
         perl Makefile.PL
         make
 
