@@ -20,16 +20,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
+      
       - name: perl -V
         run: perl -V
+
       - name: install dependencies
-        uses: perl-actions/install-with-cpm@v1.3
+        uses: perl-actions/install-with-cpanm@stable
         with:
           cpanfile: "cpanfile"
+          sudo: false
+        
       - name: Makefile.PL
         run: perl Makefile.PL TT_QUIET=n TT_ACCEPT=y
+      
       - name: make test
         run: make test
+      
       - name: make install
         run: sudo make install
 
