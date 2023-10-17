@@ -46,6 +46,16 @@ jobs:
     - name: Run tests
       run: prove -l t
 
+    - name: Show Errors on Ubuntu
+      if:  ${{ failure() && startsWith( matrix.runner, 'ubuntu-')}}
+      run: |
+         cat /home/runner/.cpanm/work/*/build.log
+ 
+    - name: Show Errors on OSX
+      if:  ${{ failure() && startsWith( matrix.runner, 'macos-')}}
+      run: |
+         cat  /Users/runner/.cpanm/work/*/build.log
+
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       env:
