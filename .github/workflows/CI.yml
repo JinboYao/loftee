@@ -24,17 +24,21 @@ jobs:
       uses: shogo82148/actions-setup-perl@v1
       with:
         perl-version: '5.34'  # Adjust the Perl version as needed
+    
+    - name: Update CPAN and install App::cpanminus
+          run: |
+            cpan -u
+            cpan App::cpanminus
 
     - name: Install build-essential
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential
 
-    # - name: Install ImageMagick dependencies
-    #   run: |
-    #     sudo apt-get update
-    #     sudo apt-get install -y imagemagick imagemagick-c++ imagemagick-devel imagemagick-c++-devel imagemagick-perl
-
+    - name: Install ImageMagick dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y imagemagick imagemagick-c++ imagemagick-devel imagemagick-c++-devel imagemagick-perl
 
     - name: Install dependencies
       run: cpanm --installdeps .
