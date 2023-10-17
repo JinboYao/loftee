@@ -35,10 +35,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential
 
-    # - name: Install ImageMagick dependencies
-    #   run: |
-    #     sudo apt-get update
-    #     sudo apt-get install -y imagemagick imagemagick-c++ imagemagick-devel imagemagick-c++-devel imagemagick-perl
+    - name: Update Perl Toolchain
+      run: |
+        cpan App::cpanoutdated
+        cpanm --self-upgrade
 
     - name: Install dependencies using cpanm
       run: cpanm --installdeps .
