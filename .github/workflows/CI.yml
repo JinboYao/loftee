@@ -10,33 +10,22 @@ on:
 
 jobs:
   perl:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         perl-version:
           - '5.34'
-
     container:
       image: perl:${{ matrix.perl-version }}
-
     steps:
       - uses: actions/checkout@v3
-
       - name: perl -V
         run: perl -V
-
       - run: prove -lv t
 
-      - name: Install dependencies
-        run: |
-            cpanm --notest Module::Install
-            cpanm --installdeps --notest .
-
-      # - name: install cpm and multiple modules
-      #   uses: perl-actions/install-with-cpm@stable
-      #   with:
-      #     install: |
-      #       Simple::Accessor
-      #       Test::Parallel
+  upload-coverage:
+    runs-on: ubuntu-latest
+    needs: perl
+    steps:
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
