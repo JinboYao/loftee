@@ -9,36 +9,57 @@ on:
   pull_request:
 
 jobs:
-  perl_tester:
+  perl:
+
     runs-on: ubuntu-latest
-    name: "perl v${{ matrix.perl-version }}"
 
     strategy:
-      fail-fast: false
       matrix:
         perl-version:
-          - "5.30"
+          - '5.10'
+          - '5.16'
+          - 'latest'
+          - 'threaded'
 
     container:
-      image: perldocker/perl-tester:${{ matrix.perl-version }}
+      image: perl:${{ matrix.perl-version }}
 
     steps:
       - uses: actions/checkout@v2
-
       - name: perl -V
         run: perl -V
+        
+# jobs:
+#   perl_tester:
+#     runs-on: ubuntu-latest
+#     name: "perl v${{ matrix.perl-version }}"
 
-      - name: install cpanm and multiple modules
-        uses: perl-actions/install-with-cpanm@v1
-        with:
-          install: |
-            Simple::Accessor
-            Test::Parallel
-      # - name: uses install-with-cpanm
-      #   uses: perl-actions/install-with-cpanm@stable
-      #   with:
-      #     cpanfile: "cpanfile"
-      #     sudo: false
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         perl-version:
+#           - "5.30"
 
-      - run: perl Makefile.PL
-      - run: make test
+#     container:
+#       image: perldocker/perl-tester:${{ matrix.perl-version }}
+
+#     steps:
+#       - uses: actions/checkout@v2
+
+#       - name: perl -V
+#         run: perl -V
+
+#       - name: install cpanm and multiple modules
+#         uses: perl-actions/install-with-cpanm@v1
+#         with:
+#           install: |
+#             Simple::Accessor
+#             Test::Parallel
+#       # - name: uses install-with-cpanm
+#       #   uses: perl-actions/install-with-cpanm@stable
+#       #   with:
+#       #     cpanfile: "cpanfile"
+#       #     sudo: false
+
+#       - run: perl Makefile.PL
+#       - run: make test
