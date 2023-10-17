@@ -30,6 +30,11 @@ jobs:
       - name: perl -V
         run: perl -V
 
+      - name: Install dependencies
+        run: |
+            cpanm --notest Module::Install
+            cpanm --installdeps --notest .
+
       - name: install cpm and multiple modules
         uses: perl-actions/install-with-cpm@stable
         with:
