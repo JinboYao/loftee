@@ -1,9 +1,16 @@
-name:   Perl CI
+name: Perl CI
+
 on:
   push:
-    branches: [main, master, develop]
+    branches:
+      - main
+      - master
+      - develop
   pull_request:
-    branches: [main, master, develop]
+    branches:
+      - main
+      - master
+      - develop
 
 jobs:
   build:
@@ -19,7 +26,9 @@ jobs:
         perl-version: '5.32'
 
     - name: Install dependencies
-      run: cpanm --installdeps .
+      run: |
+        sudo apt-get install -y build-essential  # Ensure build tools are available
+        cpanm --installdeps .
 
     - name: Run tests
       run: prove -l
